@@ -1,10 +1,16 @@
 import { AppConfig } from '@/types';
 
+const getLocalDateString = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+
 export const defaultConfig: AppConfig = {
   meta: {
     configVersion: '1.0',
     configType: 'default',
-    createdAt: new Date().toISOString().split('T')[0],
+    createdAt: getLocalDateString(),
+    startDate: getLocalDateString(),
   },
   settings: {
     weekMode: 'regular',

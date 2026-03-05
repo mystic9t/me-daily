@@ -55,6 +55,7 @@ export function ClientNotifications({ config }: ClientNotificationsProps) {
       }
 
       if (config.settings.notifications.yogaReminder && currentTime === (isTravel ? '22:20' : '23:50')) {
+        // Show tonight's yoga based on calendar day
         newNotifications.push({
           id: 'yoga-reminder',
           title: 'Yoga Time',

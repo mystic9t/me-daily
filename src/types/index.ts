@@ -93,6 +93,7 @@ export interface AppConfig {
     configVersion: string;
     configType: 'default' | 'custom';
     createdAt: string;
+    startDate: string;
   };
   settings: {
     weekMode: WeekMode;

@@ -1,26 +1,23 @@
 'use client';
 
-import { Home, Calendar, BarChart3, Settings } from 'lucide-react';
+import { Home, BarChart3 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
-type View = 'today' | 'history' | 'scorecard' | 'settings';
-
 interface BottomNavProps {
-  currentView: View;
-  onViewChange: (view: View) => void;
+  currentView: string;
+  onViewChange: (view: string) => void;
 }
 
-const navItems: { id: View; label: string; icon: typeof Home }[] = [
+const navItems: { id: string; label: string; icon: typeof Home }[] = [
   { id: 'today', label: 'Today', icon: Home },
-  { id: 'history', label: 'History', icon: Calendar },
-  { id: 'scorecard', label: 'Scorecard', icon: BarChart3 },
-  { id: 'settings', label: 'Settings', icon: Settings },
+  { id: 'stats', label: 'Progress', icon: BarChart3 },
 ];
 
 export function BottomNav({ currentView, onViewChange }: BottomNavProps) {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border safe-area-bottom">
-      <div className="max-w-md mx-auto flex justify-around items-center h-16">
+    <nav className="fixed bottom-0 left-0 right-0 nav-glass safe-area-bottom z-50">
+      <div className="max-w-md mx-auto flex justify-around items-center h-16 px-2">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = currentView === item.id;
@@ -29,12 +26,28 @@ export function BottomNav({ currentView, onViewChange }: BottomNavProps) {
               key={item.id}
               onClick={() => onViewChange(item.id)}
               className={cn(
-                'flex flex-col items-center justify-center flex-1 h-full gap-1 transition-colors',
+                'relative flex flex-col items-center justify-center flex-1 h-full gap-1 transition-all duration-300 rounded-xl mx-1',
                 isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
               )}
             >
-              <Icon className="w-5 h-5" />
-              <span className="text-xs font-medium">{item.label}</span>
+              {isActive && (
+                <motion.div
+                  layoutId="activeTab"
+                  className="absolute inset-0 bg-primary/10 rounded-xl"
+                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                />
+              )}
+              <div className="relative z-10 flex flex-col items-center gap-1">
+                <motion.div
+                  animate={{ scale: isActive ? 1.1 : 1 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                >
+                  <Icon className={cn('w-5 h-5', isActive && 'drop-shadow-[0_0_8px_rgba(99,102,241,0.5)]')} />
+                </motion.div>
+                <span className={cn('text-[10px] font-medium', isActive && 'font-semibold')}>
+                  {item.label}
+                </span>
+              </div>
             </button>
           );
         })}

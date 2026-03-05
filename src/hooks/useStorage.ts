@@ -11,11 +11,30 @@ export function useStorage() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
+    const getLocalDateString = (d: Date = new Date()) => {
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    };
+
     const loadData = () => {
       try {
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) {
           const parsed = JSON.parse(stored);
+          // Ensure startDate exists and is valid
+          const today = getLocalDateString();
+          const createdAt = parsed.config.meta?.createdAt || today;
+          const startDate = parsed.config.meta?.startDate;
+          
+          // If startDate is missing or invalid, set it to today and clear days
+          if (!startDate || startDate === '' || startDate === 'undefined') {
+            parsed.config.meta = {
+              ...parsed.config.meta,
+              createdAt: createdAt,
+              startDate: today,
+            };
+            parsed.days = {};
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+          }
           setData(parsed);
         } else {
           const initialData: AppData = {
@@ -99,6 +118,37 @@ export function useStorage() {
     setData(newData);
   }, [data?.days]);
 
+  const getLocalDateString = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  };
+
+  const resetHistory = useCallback(() => {
+    if (!data) return;
+    const newData: AppData = {
+      ...data,
+      days: {},
+      config: {
+        ...data.config,
+        meta: {
+          ...data.config.meta,
+          startDate: getLocalDateString(),
+        },
+      },
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newData));
+    setData(newData);
+  }, [data]);
+
+  const resetAll = useCallback(() => {
+    const initialData: AppData = {
+      config: defaultConfig,
+      days: {},
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(initialData));
+    setData(initialData);
+  }, []);
+
   const exportConfig = useCallback(() => {
     if (!data) return null;
     const configJson = JSON.stringify(data.config, null, 2);
@@ -139,6 +189,8 @@ export function useStorage() {
     updateDayLog,
     logHabit,
     resetToDefault,
+    resetHistory,
+    resetAll,
     exportConfig,
     importConfig,
   };

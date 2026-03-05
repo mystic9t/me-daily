@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { HabitLog, DayType, WeekMode, AppConfig } from '@/types';
+import { HabitLog, DayType, AppConfig } from '@/types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Timer, AlertCircle } from 'lucide-react';
@@ -10,13 +10,12 @@ interface GymLoggerProps {
   isOpen: boolean;
   onClose: () => void;
   dayType: DayType;
-  mode: WeekMode;
   config: AppConfig;
   existingLog: HabitLog | undefined;
   onLog: (log: HabitLog) => void;
 }
 
-export function GymLogger({ isOpen, onClose, dayType, mode, config, existingLog, onLog }: GymLoggerProps) {
+export function GymLogger({ isOpen, onClose, dayType, config, existingLog, onLog }: GymLoggerProps) {
   const [startTime, setStartTime] = useState<string | null>(existingLog?.startTime || null);
   const [endTime, setEndTime] = useState<string | null>(existingLog?.endTime || null);
 

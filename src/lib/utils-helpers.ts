@@ -1,6 +1,18 @@
 import { HabitConfig, HabitTrigger, WeekMode, DayType, DayLog, AppConfig } from '@/types';
 import { dayTypeSchedule } from '@/lib/config';
 
+// Day starts at 5am and ends at 4:59am next day
+const DAY_START_HOUR = 5;
+
+export function getDayKey(date: Date): string {
+  const d = new Date(date);
+  // If it's before 5am, it's still the previous day's tracking
+  if (d.getHours() < DAY_START_HOUR) {
+    d.setDate(d.getDate() - 1);
+  }
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 export function formatTime(date: Date): string {
   return date.toLocaleTimeString('en-US', {
     hour: '2-digit',
@@ -22,10 +34,15 @@ export function addMinutes(timeStr: string, minutes: number): string {
 }
 
 export function getDayType(date: Date, config: AppConfig): DayType {
-  const dateStr = date.toISOString().split('T')[0];
+  const dateStr = getDayKey(date);
   const override = config.settings.dayTypeOverrides[dateStr];
   if (override) return override;
-  return dayTypeSchedule[date.getDay()];
+  // Use the tracking day to determine day type
+  const trackingDay = new Date(date);
+  if (trackingDay.getHours() < DAY_START_HOUR) {
+    trackingDay.setDate(trackingDay.getDate() - 1);
+  }
+  return dayTypeSchedule[trackingDay.getDay()];
 }
 
 export function getScheduledTime(
@@ -105,7 +122,7 @@ export function calculateWeekScore(
   let totalTarget = 0;
 
   for (const date of weekDates) {
-    const dateStr = date.toISOString().split('T')[0];
+    const dateStr = getDayKey(date);
     const dayLog = days[dateStr];
     const dayType = getDayType(date, config);
     const habits = filterHabitsForDay(config.habits, config.settings.weekMode, dayType);
@@ -138,7 +155,7 @@ export function getScoreBgColor(percentage: number): string {
 }
 
 export function formatDate(date: Date): string {
-  return date.toISOString().split('T')[0];
+  return getDayKey(date);
 }
 
 export function formatDisplayDate(date: Date): string {
