@@ -31,9 +31,7 @@ export function HabitCard({
   const Icon = getIcon(habit.icon);
   
   const handleClick = () => {
-    if (!log || log.status === 'pending') {
-      onTap();
-    }
+    onTap();
   };
 
   const handleContextMenu = (e: React.MouseEvent) => {

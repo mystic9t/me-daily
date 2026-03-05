@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useStorage } from '@/hooks/useStorage';
 import { TodayView } from '@/components/TodayView';
 import { HistoryView } from '@/components/HistoryView';
@@ -13,10 +13,25 @@ import { PwaInstallPrompt } from '@/components/PwaInstallPrompt';
 
 type View = 'today' | 'history' | 'scorecard' | 'settings';
 
+const SPLASH_SHOWN_KEY = 'daystack-splash-shown';
+
 export default function Home() {
   const [currentView, setCurrentView] = useState<View>('today');
   const { data, isLoaded, logHabit, updateConfig, resetToDefault, exportConfig, importConfig } = useStorage();
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(false);
+
+  useEffect(() => {
+    // Check if user has seen splash before
+    const hasSeenSplash = localStorage.getItem(SPLASH_SHOWN_KEY);
+    if (!hasSeenSplash) {
+      setShowSplash(true);
+    }
+  }, []);
+
+  const handleSplashComplete = () => {
+    localStorage.setItem(SPLASH_SHOWN_KEY, 'true');
+    setShowSplash(false);
+  };
 
   if (!isLoaded || !data) {
     return (
@@ -26,11 +41,11 @@ export default function Home() {
     );
   }
 
-  if (showSplash && data.config.meta.configType === 'default') {
+  if (showSplash) {
     return (
       <FirstLaunchSplash 
         config={data.config} 
-        onComplete={() => setShowSplash(false)} 
+        onComplete={handleSplashComplete} 
       />
     );
   }

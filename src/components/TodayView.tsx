@@ -35,6 +35,14 @@ export function TodayView({ data, onLogHabit }: TodayViewProps) {
   };
 
   const handleHabitTap = (habit: HabitConfig) => {
+    const existingLog = dayLog?.habits[habit.id];
+    
+    // If already done, unmark it (set back to pending)
+    if (existingLog?.status === 'done') {
+      handleLogHabit(habit.id, { status: 'pending' });
+      return;
+    }
+    
     if (habit.id === 'gym') {
       setGymLoggerOpen(true);
     } else if (habit.id === 'yoga' || habit.id === 'yoga-travel') {

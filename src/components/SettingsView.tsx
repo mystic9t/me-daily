@@ -8,7 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { SetupEditor } from './SetupEditor';
-import { Bell, Moon, Sun, Download, Upload, RotateCcw, ChevronRight, Settings2 } from 'lucide-react';
+import { Bell, Moon, Sun, Download, Upload, RotateCcw, ChevronRight, Settings2, Smartphone, Check } from 'lucide-react';
 
 interface SettingsViewProps {
   data: AppData;
@@ -163,6 +163,37 @@ export function SettingsView({ data, onUpdateConfig, onReset, onExport, onImport
         <p className="text-xs text-muted-foreground">
           Export your config to sync across devices or share with others.
         </p>
+      </Card>
+
+      <Card className="p-4 space-y-4">
+        <h2 className="font-semibold flex items-center gap-2">
+          <Smartphone className="w-4 h-4" />
+          Install App
+        </h2>
+        
+        <div className="space-y-3 text-sm">
+          <p className="text-muted-foreground">
+            Install DayStack on your home screen for quick access:
+          </p>
+          
+          <div className="space-y-2">
+            <div className="flex items-start gap-2">
+              <span className="bg-primary/20 text-primary rounded-full w-5 h-5 flex items-center justify-center text-xs shrink-0 mt-0.5">1</span>
+              <div>
+                <p className="font-medium">iPhone / iPad</p>
+                <p className="text-muted-foreground">Tap the share button in Safari, then &quot;Add to Home Screen&quot;</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-2">
+              <span className="bg-primary/20 text-primary rounded-full w-5 h-5 flex items-center justify-center text-xs shrink-0 mt-0.5">2</span>
+              <div>
+                <p className="font-medium">Android</p>
+                <p className="text-muted-foreground">Tap the menu (⋮), then &quot;Add to Home screen&quot; or &quot;Install app&quot;</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </Card>
 
       <Card className="p-4 space-y-4">
