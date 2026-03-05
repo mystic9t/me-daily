@@ -3,8 +3,6 @@ name: Deploy to Vercel
 on:
   push:
     branches: [master, main]
-  pull_request:
-    branches: [master, main]
 
 jobs:
   deploy:
@@ -28,6 +26,6 @@ jobs:
         if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-org-id: team_2ipu6G9kYyWy0ktzJkIodZOP
+          vercel-project-id: prj_dFG0p4iT1WzsRdhJDmyvWqCs30bi
           vercel-args: '--prod'
